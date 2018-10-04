@@ -8,23 +8,23 @@ CONFIG += c++14
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
-        main.cpp \
-    nvidiacontrol.cpp \
-    gpuchart.cpp \
-    settings.cpp \
-    hardwaremonitor.cpp \
-    panel.cpp
+        src/main.cpp \
+    src/nvidiacontrol.cpp \
+    src/gpuchart.cpp \
+    src/settings.cpp \
+    src/hardwaremonitor.cpp \
+    src/panel.cpp
 
 HEADERS += \
-    nvidiacontrol.h \
-    gpuchart.h \
-    settings.h \
-    hardwaremonitor.h \
-    panel.h
+    include/nvidiacontrol.h \
+    include/gpuchart.h \
+    include/settings.h \
+    include/hardwaremonitor.h \
+    include/panel.h
 
 FORMS += \
-    hardwaremonitor.ui \
-    panel.ui
+    include/ui/hardwaremonitor.ui \
+    include/ui/panel.ui
 
 unix {
     LIBS += -lX11

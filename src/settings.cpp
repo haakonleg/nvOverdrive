@@ -1,4 +1,4 @@
-#include "settings.h"
+#include "include/settings.h"
 
 #define APP "App"
 #define APPLY_ON_START "apply_on_start"

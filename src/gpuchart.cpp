@@ -1,4 +1,4 @@
-#include "gpuchart.h"
+#include "include/gpuchart.h"
 
 bool GPUChart::ST_INIT = false;
 QPen GPUChart::PEN_STYLE;

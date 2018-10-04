@@ -1,4 +1,4 @@
-#include "panel.h"
+#include "include/panel.h"
 
 Panel::Panel(NvidiaControl& nvidia, Settings& settings, QWidget* parent) : QMainWindow(parent), nvidia(nvidia), settings(settings) {
     ui = std::make_unique<Ui::Panel>();

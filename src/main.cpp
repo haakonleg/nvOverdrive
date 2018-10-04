@@ -1,6 +1,6 @@
-#include "panel.h"
-#include "nvidiacontrol.h"
-#include "settings.h"
+#include "include/panel.h"
+#include "include/nvidiacontrol.h"
+#include "include/settings.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

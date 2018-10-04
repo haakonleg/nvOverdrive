@@ -1,4 +1,4 @@
-#include "nvidiacontrol.h"
+#include "include/nvidiacontrol.h"
 
 QString NvidiaControl::xLibErr;
 

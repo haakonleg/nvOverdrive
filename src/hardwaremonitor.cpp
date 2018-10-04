@@ -1,4 +1,4 @@
-#include "hardwaremonitor.h"
+#include "include/hardwaremonitor.h"
 
 HardwareMonitor::HardwareMonitor(NvidiaControl& nvidia, int gpuId, QWidget *parent) : QWidget(parent), nvidia(nvidia), gpuId(gpuId) {
     ui = std::make_unique<Ui::HardwareMonitor>();
