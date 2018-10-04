@@ -4,7 +4,7 @@ HardwareMonitor::HardwareMonitor(NvidiaControl& nvidia, int gpuId, QWidget *pare
     ui = std::make_unique<Ui::HardwareMonitor>();
     ui->setupUi(this);
 
-    chartsLayout = new QGridLayout(ui->scrollAreaWidget);
+    chartsLayout = new QVBoxLayout(ui->scrollAreaWidget);
     chartsLayout->setSpacing(0);
     chartsLayout->setMargin(0);
     chartsLayout->setContentsMargins(0,0,0,0);
@@ -35,14 +35,12 @@ void HardwareMonitor::addChart(CHARTS chart) {
         return;
     }
 
-    int row = chartsLayout->count() / 2;
-    int col = chartsLayout->count() % 2;
-    chartsLayout->addWidget(charts[chart], row, col);
+    chartsLayout->addWidget(charts[chart]);
 
     if (charts.size() == 1)
         updater->start(1000);
 
-    ui->scrollAreaWidget->setMinimumHeight(charts[chart]->maximumHeight() * charts.size() / 2);
+    ui->scrollAreaWidget->setMinimumHeight(charts[chart]->maximumHeight() * charts.size());
 }
 
 void HardwareMonitor::updateCharts() {

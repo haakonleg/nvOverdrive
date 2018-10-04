@@ -19,7 +19,7 @@ GPUChart::GPUChart(QString title, int axisYSize, QWidget* parent) : QChartView(p
         ST_INIT = true;
     }
 
-    setMaximumHeight(200);
+    setMaximumHeight(120);
 
     series = new QLineSeries(this);
     series->setPen(PEN_STYLE);
@@ -48,6 +48,7 @@ GPUChart::GPUChart(QString title, int axisYSize, QWidget* parent) : QChartView(p
     currVal = new QGraphicsSimpleTextItem(chart.get());
     currVal->setFont(LABELS_FONT);
 
+    setRenderHint(QPainter::Antialiasing);
     setChart(chart.get());
 }
 

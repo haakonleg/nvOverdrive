@@ -23,7 +23,7 @@ public:
     explicit HardwareMonitor(NvidiaControl& nvidia, int gpuId, QWidget *parent = 0);
 
     NvidiaControl& nvidia;
-    QGridLayout* chartsLayout;
+    QVBoxLayout* chartsLayout;
     QTimer* updater;
     QMap<CHARTS, GPUChart*> charts;
 

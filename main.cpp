@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "panel.h"
 #include "nvidiacontrol.h"
 #include "settings.h"
 
@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
         NvidiaControl nvidia;
         Settings settings;
 
-        MainWindow mainWindow(nvidia, settings);
-        mainWindow.show();
+        Panel panel(nvidia, settings);
+        panel.show();
         return app.exec();
     } catch (std::exception &e) {
         QMessageBox::critical(nullptr, "Uncaught exception", e.what());

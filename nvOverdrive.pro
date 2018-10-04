@@ -9,22 +9,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
     nvidiacontrol.cpp \
     gpuchart.cpp \
     settings.cpp \
-    hardwaremonitor.cpp
+    hardwaremonitor.cpp \
+    panel.cpp
 
 HEADERS += \
-        mainwindow.h \
     nvidiacontrol.h \
     gpuchart.h \
     settings.h \
-    hardwaremonitor.h
+    hardwaremonitor.h \
+    panel.h
 
 FORMS += \
-        mainwindow.ui \
-    hardwaremonitor.ui
+    hardwaremonitor.ui \
+    panel.ui
 
 unix {
     LIBS += -lX11
