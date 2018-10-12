@@ -61,7 +61,7 @@ public:
     NvidiaControl();
     ~NvidiaControl();
 
-    const QVector<QString> getGpuUUIDs();
+    const QVector<GPU>& getGpus();
     const GPU& getGpu(int gpuId);
     ClockFreqRanges getMinMaxClockFreqs(int gpuId);
     ClockFreqs getClocks(int gpuId);

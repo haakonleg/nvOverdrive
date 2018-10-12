@@ -48,7 +48,9 @@ public:
     void newProfile(const QString& gpuUUID, const QString& profileName);
     void deleteProfile(const QString& gpuUUID, const QString& profileName);
     void editProfile(const QString& gpuUUID, GPUProfile edited, const QString& profileName);
-    void setApplyOnStart(const QString& gpuUUID, const QString& profileName);
+    const QString getApplyOnStart(const QString& gpuUUID);
+    void setApplyOnStart(const QString& gpuUUID, const QString& profileName, bool enable);
+    const GPUProfile& getProfile(const QString& gpuUUID, const QString& profileName);
 };
 
 #endif // SETTINGS_H

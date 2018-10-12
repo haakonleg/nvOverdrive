@@ -97,6 +97,12 @@
         </item>
         <item row="5" column="0">
          <widget class="QSlider" name="sliderMemClock">
+          <property name="minimum">
+           <number>-10000</number>
+          </property>
+          <property name="value">
+           <number>-10000</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -117,6 +123,9 @@
         </item>
         <item row="7" column="0">
          <widget class="QSlider" name="sliderFanSpeed">
+          <property name="maximum">
+           <number>100</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -173,7 +182,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Fan Speed (Mhz)</string>
+           <string>Fan Speed (%)</string>
           </property>
          </widget>
         </item>
@@ -227,6 +236,12 @@
         </item>
         <item row="3" column="0">
          <widget class="QSlider" name="sliderCoreClock">
+          <property name="minimum">
+           <number>-10000</number>
+          </property>
+          <property name="value">
+           <number>-10000</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -234,6 +249,9 @@
         </item>
         <item row="1" column="0">
          <widget class="QSlider" name="sliderPowLimit">
+          <property name="maximum">
+           <number>100</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -255,7 +273,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="document-save"/>
+           <iconset theme="document-save">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -271,7 +290,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="user-trash"/>
+           <iconset theme="user-trash">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -367,7 +387,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="list-add"/>
+           <iconset theme="list-add">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>

@@ -107,7 +107,7 @@ void Settings::readSettings() {
 void Settings::readAppSettings(const QJsonObject& json) {
     QJsonObject settingsObj = json[APP].toObject();
 
-    QJsonObject applyOnStartObj = json[APPLY_ON_START].toObject();
+    QJsonObject applyOnStartObj = settingsObj[APPLY_ON_START].toObject();
     for (auto it = applyOnStartObj.constBegin(); it != applyOnStartObj.constEnd(); ++it) {
         applyOnStart[it.key()] = it.value().toString();
     }
@@ -165,7 +165,18 @@ void Settings::editProfile(const QString& gpuUUID, GPUProfile edited, const QStr
     writeSettings();
 }
 
-void Settings::setApplyOnStart(const QString &gpuUUID, const QString &profileName) {
-    applyOnStart[gpuUUID] = profileName;
+const QString Settings::getApplyOnStart(const QString &gpuUUID) {
+    return applyOnStart.value(gpuUUID, QString());
+}
+
+void Settings::setApplyOnStart(const QString &gpuUUID, const QString &profileName, bool enable) {
+    if (enable)
+        applyOnStart[gpuUUID] = profileName;
+    else
+        applyOnStart.remove(gpuUUID);
     writeSettings();
+}
+
+const GPUProfile& Settings::getProfile(const QString &gpuUUID, const QString &profileName) {
+    return gpuProfiles[gpuUUID][profileName];
 }

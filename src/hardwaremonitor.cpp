@@ -52,16 +52,16 @@ void HardwareMonitor::updateCharts() {
     for (auto it = charts.cbegin(); it != charts.cend(); ++it) {
         switch (it.key()) {
         case GPU_TEMP:
-            charts[GPU_TEMP]->addValue(coreTemp);
+            it.value()->addValue(coreTemp);
             break;
         case CORE_CLOCK:
-            charts[CORE_CLOCK]->addValue(freqs.coreClock);
+            it.value()->addValue(freqs.coreClock);
             break;
         case MEM_CLOCK:
-            charts[MEM_CLOCK]->addValue(freqs.memClock);
+            it.value()->addValue(freqs.memClock);
             break;
         case FAN_SPEED:
-            charts[FAN_SPEED]->addValue(cooler.currentLevel);
+            it.value()->addValue(cooler.currentLevel);
             break;
         }
     }

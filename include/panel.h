@@ -37,7 +37,8 @@ private:
     void newProfile();
     void deleteProfile();
     void saveProfile();
-    void applyOnStart();
+    void applyOnStart(bool enable);
+    void profileChanged(const QString& profileName);
 };
 
 #endif // PANEL_H

@@ -1,5 +1,7 @@
 #include "include/panel.h"
 
+#define SB_TEMP_MSG 2000
+
 Panel::Panel(NvidiaControl& nvidia, Settings& settings, QWidget* parent) : QMainWindow(parent), nvidia(nvidia), settings(settings) {
     ui = std::make_unique<Ui::Panel>();
     ui->setupUi(this);
@@ -17,6 +19,7 @@ Panel::Panel(NvidiaControl& nvidia, Settings& settings, QWidget* parent) : QMain
     connect(ui->btnDeleteProfile, &QPushButton::clicked, this, &Panel::deleteProfile);
     connect(ui->btnSaveProfile, &QPushButton::clicked, this, &Panel::saveProfile);
     connect(ui->chkBoxApplyOnStart, &QCheckBox::toggled, this, &Panel::applyOnStart);
+    connect(ui->cmbBoxProfile, static_cast<void (QComboBox::*)(const QString&)>(&QComboBox::currentIndexChanged), this, &Panel::profileChanged);
 
     loadGpu(0);
 }
@@ -34,7 +37,7 @@ void Panel::loadGpu(int id) {
     ui->sliderMemClock->setMaximum(freqRanges.memMax);
     ui->sliderMemClock->setMinimum(freqRanges.memMin);
 
-    // Add set clock frequencies
+    // Add the set clock frequencies
     ClockFreqs freqs = nvidia.getClocks(selectedGPU->id);
     ui->sliderCoreClock->setValue(freqs.coreClock);
     ui->sliderMemClock->setValue(freqs.memClock);
@@ -63,37 +66,37 @@ void Panel::sliderValChanged(int value) {
     QString text = QString::number(value);
     const QSlider* slider = static_cast<QSlider*>(sender());
 
-    if (value > 0 && (slider == ui->sliderCoreClock || slider == ui->sliderMemClock)) {
+    if (value > 0 && (slider == ui->sliderCoreClock || slider == ui->sliderMemClock))
         text.prepend('+');
-    }
 
-    if (slider == ui->sliderCoreClock) {
+    if (slider == ui->sliderCoreClock)
         ui->editCoreClock->setText(text);
-    } else if (slider == ui->sliderMemClock) {
+    else if (slider == ui->sliderMemClock)
         ui->editMemClock->setText(text);
-    } else if (slider == ui->sliderFanSpeed) {
+    else if (slider == ui->sliderFanSpeed)
         ui->editFanSpeed->setText(text);
-    }
 }
 
 void Panel::valueEntered() {
     QSlider* slider;
     const QLineEdit* edit = static_cast<QLineEdit*>(sender());
 
-    if (edit == ui->editCoreClock) {
+    if (edit == ui->editCoreClock)
         slider = ui->sliderCoreClock;
-    } else if (edit == ui->editMemClock) {
+    else if (edit == ui->editMemClock)
         slider = ui->sliderMemClock;
-    } else if (edit == ui->editFanSpeed) {
+    else if (edit == ui->editFanSpeed)
         slider = ui->sliderFanSpeed;
-    }
 
     bool ok;
     int val = edit->text().toInt(&ok);
-    if (!ok || val < slider->minimum() || val > slider->maximum())
+    if (!ok || val < slider->minimum() || val > slider->maximum()) {
         QMessageBox::critical(this, "Error", "Invalid value");
-    else
+        // Stupid way to reset the text input to what it was before
+        slider->valueChanged(slider->value());
+    } else {
         slider->setValue(val);
+    }
 }
 
 void Panel::apply() {
@@ -101,12 +104,16 @@ void Panel::apply() {
     int memClock = ui->sliderMemClock->value();
     int fanSpeed = ui->sliderFanSpeed->value();
 
-    nvidia.setClocks(selectedGPU->id, coreClock, memClock);
+    try {
+        nvidia.setClocks(selectedGPU->id, coreClock, memClock);
+        ui->radioFanAuto->isChecked() ?
+                    nvidia.setFanSpeedAuto(selectedGPU->id) :
+                    nvidia.setManualFanSpeed(selectedGPU->id, fanSpeed);
 
-    if (!ui->radioFanAuto->isChecked())
-        nvidia.setManualFanSpeed(selectedGPU->id, fanSpeed);
-    else
-        nvidia.setFanSpeedAuto(selectedGPU->id);
+        statusBar()->showMessage("Settings successfully applied", SB_TEMP_MSG);
+    } catch (NvException &e) {
+        QMessageBox::critical(this, "Error", e.what());
+    }
 }
 
 void Panel::enableFanControl(bool enable) {
@@ -124,6 +131,7 @@ void Panel::newProfile() {
         settings.newProfile(selectedGPU->UUID, name);
         ui->cmbBoxProfile->addItem(name);
         ui->cmbBoxProfile->setCurrentIndex(ui->cmbBoxProfile->count()-1);
+        statusBar()->showMessage(QString("Created profile \"%1\"").arg(name), SB_TEMP_MSG);
     } catch (SettingsException& e) {
         QMessageBox::critical(this, "Error", e.what());
     }
@@ -138,6 +146,7 @@ void Panel::deleteProfile() {
                               QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes) {
         settings.deleteProfile(selectedGPU->UUID, profileName);
         ui->cmbBoxProfile->removeItem(index);
+        statusBar()->showMessage(QString("Deleted profile \"%1\"").arg(profileName), SB_TEMP_MSG);
     }
 }
 
@@ -148,16 +157,34 @@ void Panel::saveProfile() {
     profile.coreClock = ui->sliderCoreClock->value();
     profile.memClock = ui->sliderMemClock->value();
     profile.manualFanControl = !ui->radioFanAuto->isChecked();
-
-    profile.fanSpeed = 0;
-    if (profile.manualFanControl)
-        profile.fanSpeed = ui->sliderFanSpeed->value();
+    profile.manualFanControl ?
+                profile.fanSpeed = ui->sliderFanSpeed->value() :
+                profile.fanSpeed = 0;
 
     settings.editProfile(selectedGPU->UUID, profile, profileName);
+    statusBar()->showMessage(QString("Saved profile \"%1\"").arg(profileName), SB_TEMP_MSG);
 }
 
-void Panel::applyOnStart() {
+void Panel::applyOnStart(bool enable) {
     QString profileName = ui->cmbBoxProfile->currentText();
-    settings.setApplyOnStart(selectedGPU->UUID, profileName);
+    settings.setApplyOnStart(selectedGPU->UUID, profileName, enable);
+}
+
+void Panel::profileChanged(const QString& profileName) {
+    // Set apply on start checkbox, must block signals here
+    bool state = ui->chkBoxApplyOnStart->blockSignals(true);
+    settings.getApplyOnStart(selectedGPU->UUID) == profileName ?
+                ui->chkBoxApplyOnStart->setChecked(true) :
+                ui->chkBoxApplyOnStart->setChecked(false);
+    ui->chkBoxApplyOnStart->blockSignals(state);
+
+    // Set the profile settings
+    const GPUProfile& profile = settings.getProfile(selectedGPU->UUID, profileName);
+    ui->sliderCoreClock->setValue(profile.coreClock);
+    ui->sliderMemClock->setValue(profile.memClock);
+    profile.manualFanControl ?
+                ui->radioFanAuto->setChecked(false) :
+                ui->radioFanAuto->setChecked(true);
+    ui->sliderFanSpeed->setValue(profile.fanSpeed);
 }
 

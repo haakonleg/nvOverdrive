@@ -56,10 +56,8 @@ NvidiaControl::~NvidiaControl() {
         XCloseDisplay(dpy);
 }
 
-const QVector<QString> NvidiaControl::getGpuUUIDs() {
-    auto vec = QVector<QString>(gpus.size());
-    for (const auto& gpu : gpus) { vec.append(gpu.UUID); }
-    return vec;
+const QVector<GPU>& NvidiaControl::getGpus() {
+    return gpus;
 }
 
 const GPU& NvidiaControl::getGpu(int gpuId) {
